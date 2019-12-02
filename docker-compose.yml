@@ -7,3 +7,6 @@ services:
       dockerfile: ./cmd/blog/rest/Dockerfile
     ports:
       - "19000:8080"
+    environment:
+      - CANDI_API_BASE_URL=https://api.helochat.id
+      - CANDI_BASIC_AUTH=Y2wtMHgyOTQ0OWQwMDpFVkw2Sk5ST1J2aVdncmhjeFU1UXZR

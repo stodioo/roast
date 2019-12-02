@@ -13,6 +13,9 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
+
+	"github.com/stodioo/roast/cmd/blog/rest/memberservice"
+	"github.com/stodioo/roast/pkg/candi"
 )
 
 var log = logrus.WithFields(logrus.Fields{"module": "main"})
@@ -53,6 +56,17 @@ func main() {
 	// Initiating router...
 	log.Infof("Initializing router")
 	router := mux.NewRouter()
+
+	// Initializing candi client
+	// use for interaction with candi services
+	candiSvc, err := candi.NewClient("CANDI", "iam")
+
+	if err != nil {
+		log.Fatalf("Unable to initializing candi service client: %v", err)
+	}
+	// initializing member service
+	memberSvc := memberservice.NewService(router, candiSvc)
+	memberSvc.SetupRouter("/v1/member")
 
 	router.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) {
 		w.Write([]byte("OK"))
