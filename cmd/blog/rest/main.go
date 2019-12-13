@@ -16,6 +16,7 @@ import (
 
 	"github.com/stodioo/roast/cmd/blog/rest/memberservice"
 	"github.com/stodioo/roast/pkg/candi"
+	"github.com/stodioo/roast/pkg/mailcore"
 )
 
 var log = logrus.WithFields(logrus.Fields{"module": "main"})
@@ -64,8 +65,15 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to initializing candi service client: %v", err)
 	}
+
+	// Initializing email service
+	mailSvc, err := mailcore.New("AWS_SES")
+	if err != nil {
+		log.Fatalf("Unable to initialising email service")
+	}
+
 	// initializing member service
-	memberSvc := memberservice.NewService(router, candiSvc)
+	memberSvc := memberservice.NewService(router, candiSvc, mailSvc)
 	memberSvc.SetupRouter("/v1/member")
 
 	router.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) {

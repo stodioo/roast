@@ -3,22 +3,26 @@ package memberservice
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 
 	"github.com/stodioo/roast/pkg/candi"
+	"github.com/stodioo/roast/pkg/mailcore"
 	"github.com/stodioo/roast/pkg/rest"
 )
 
 type MemberService struct {
 	router      *mux.Router
 	candiClient *candi.Client
+	mailSvc     *mailcore.MailCore
 }
 
-func NewService(router *mux.Router, candiClient *candi.Client) *MemberService {
+func NewService(router *mux.Router, candiClient *candi.Client, mailSvc *mailcore.MailCore) *MemberService {
 	return &MemberService{
 		router:      router,
 		candiClient: candiClient,
+		mailSvc:     mailSvc,
 	}
 }
 
@@ -67,10 +71,7 @@ func (memberSvc *MemberService) terminalRegister(resp http.ResponseWriter, req *
 		http.Error(resp, err.Error(), http.StatusBadRequest)
 		return
 	}
-	// terminalRegisterPostReq := map[string]interface{}{
-	// 	"url":    url,
-	// 	"detail": 1,
-	// }
+
 	terminal, err := memberSvc.candiClient.Register(postReq)
 
 	if err != nil {
@@ -79,4 +80,9 @@ func (memberSvc *MemberService) terminalRegister(resp http.ResponseWriter, req *
 	}
 
 	rest.WriteHeaderAndJson(resp, http.StatusOK, terminal, rest.MIME_JSON)
+}
+
+type PersonalDataBodyRequest struct {
+	Code        string    `json:"code"`
+	DateOfBirth time.Time `json:"date_of_birth,omitempty"`
 }
