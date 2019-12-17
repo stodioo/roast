@@ -10,7 +10,5 @@ services:
     environment:
       - CANDI_API_BASE_URL=https://api.helochat.id
       - CANDI_BASIC_AUTH=Y2wtMHgyOTQ0OWQwMDpFVkw2Sk5ST1J2aVdncmhjeFU1UXZR
-      - AWS_ACCESS_KEY_ID=AKIASDVRRP4SO4PGXLHX
-      - AWS_SECRET_ACCESS_KEY=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
       - AWS_SES_REGION=us-east-1
       - AWS_SES_CODE_TTL_DEFAULT=30m
